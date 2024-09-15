@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            background-image: url("a3045c9ac0458ab9a5fc14b6e5fd341f.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #3498db;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1200px;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #wheel-container {
+            position: relative;
+            width: 550px;
+            height: 550px;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 10px solid #ecf0f1;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #spin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        #spin:hover {
+            background-color: #3498db;
+            color: #ecf0f1;
+        }
+
+        .prompt-container {
+            background-color: rgba(236, 240, 241, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        #prompt {
+            font-style: italic;
+            font-size: 18px;
+            line-height: 1.5;
+            color: #34495e;
+        }
+
+        #result-dialog {
+            color: #35265f;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 35%;
+            transform: translate(-50%, -50%);
+            background-color: transparent;
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            font-size: 20px;
+        }
+
+        #result-dialog h2 {
+            color: #202020;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        #result-dialog button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(3px);
+        }
+
+        /* Motion blur effect */
+        @keyframes spin-blur {
+            0% {
+                filter: blur(0px);
+            }
+
+            50% {
+                filter: blur(3px);
+            }
+
+            100% {
+                filter: blur(0px);
+            }
+        }
+
+        .spin-blur {
+            animation: spin-blur 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        @media (max-width: 768px) {
+            * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+            body {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            h1 {
+                padding: 5px;
+                font-size: 28px;
+            }
+
+            h2 {
+                padding: 2px;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .container {
+                flex-direction: column;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            #wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            #result-dialog {
+                left: 50%;
+                padding: 20px;
+                font-size: 18px;
+            }
+
+            #result-dialog h2 {
+                font-size: 22px;
+            }
+
+            #result-dialog button {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+            h1 {
+                padding: 5px;
+                font-size: 16px;
+            }
+
+            h2 {
+                padding: 2px;
+                font-size: 12px;
+            }
+
+            .prompt-container {
+                padding: 10px;
+                max-width: 300px;
+            }
+
+            #wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            #spin {
+                width: 50px;
+                height: 50px;
+                font-size: 14px;
+            }
+
+            #result-dialog {
+                padding: 20px;
+                font-size: 16px;
+            }
+
+            #result-dialog button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            #prompt {
+                font-size: 16px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to the Spin the Wheel Game!</h1>
+    <h2>Spin and Discover Fun Facts</h2>
+    <div class="container">
+        <div class="column">
+            <div id="wheel-container">
+                <canvas id="wheel" width="400" height="400"></canvas>
+                <button id="spin">SPIN</button>
+            </div>
+        </div>
+        <div class="column">
+            <div class="prompt-container">
+                <div id="result"></div>
+                <div id="prompt"></div>
+            </div>
+        </div>
+    </div>
+    <div id="result-dialog">
+        <h2>Result</h2>
+        <p id="dialog-result"></p>
+        <button onclick="closeDialog()">Close</button>
+    </div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spin');
+        const resultElement = document.getElementById('result');
+        const promptElement = document.getElementById('prompt');
+        const resultDialog = document.getElementById('result-dialog');
+        const dialogResult = document.getElementById('dialog-result');
+
+        const sectors = [
+            { color: "#9e9402", text: "#333333", label: "Fact 1" },
+            { color: "#ff6347", text: "#ffffff", label: "Fact 2" },
+            { color: "#4169e1", text: "#ffffff", label: "Fact 3" },
+            { color: "#32cd32", text: "#000000", label: "Fact 4" },
+            { color: "#ff69b4", text: "#333333", label: "Fact 5" },
+            { color: "#8a2be2", text: "#ffffff", label: "Fact 6" },
+            { color: "#00ced1", text: "#333333", label: "Fact 7" },
+            { color: "#ffa500", text: "#333333", label: "Fact 8" },
+        ];
+
+        const prompts = [
+            "President (Articles 52-62): Position: The President is the ceremonial head of state, representing the country both domestically and internationally.Election: Elected by an electoral college comprising members of both houses of Parliament and the legislative assemblies of states and Union territories.Powers: Includes appointing the Prime Minister, giving assent to bills, issuing ordinances, and serving as the Commander-in-Chief of the Armed Forces. The President also has the power to pardon or commute sentences.",
+            "Vice-President (Articles 63-67): Position: Serves as the ex-officio Chairman of the Rajya Sabha and assists the President. Election: Elected by an electoral college similar to that of the President. Powers: In the absence of the President, the Vice-President performs the President's functions.",
+            "Council of Ministers (Articles 74-75):Composition: Includes Cabinet Ministers, Ministers of State, and Deputy Ministers.Function: Assists the Prime Minister in policy-making and administration. The Council of Ministers is collectively responsible to the Lok Sabha.Collective Responsibility: The entire Council is accountable to the Lok Sabha for its actions and decisions.",
+            "Duties and Responsibilities (Articles 76-78):Duties: The Executive is responsible for enforcing laws, formulating policies, and managing the administration of the country.Emergency Powers: In times of national emergency, the President can assume greater powers, including those related to the distribution of authority between the Union and the States.",
+            "Appointments and Powers (Articles 77-78): Appointments: Includes the appointment of key officials like Governors, Chief Justices, and Ambassadors. Ordinances: The President can issue ordinances on the advice of the Council of Ministers when Parliament is not in session. These ordinances have the force of law but must be approved by Parliament.",
+            "Prime Minister (Articles 74-75):Position: Head of the government, leading the executive branch.Appointment: Appointed by the President, usually the leader of the majority party in the Lok Sabha.Powers: Appoints and dismisses ministers, determines the allocation of portfolios, and guides the administration's policies and decisions."
+        ];
+
+        let isSpinning = false;
+        let currentRotation = 0; // Track current rotation
+
+        // Draw the wheel
+        function drawWheel() {
+            const ctx = wheel.getContext('2d');
+            const radius = wheel.width / 2;
+            const arc = Math.PI * 2 / sectors.length;
+
+            ctx.clearRect(0, 0, wheel.width, wheel.height);
+
+            for (let i = 0; i < sectors.length; i++) {
+                const angle = i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = sectors[i].color;
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, angle, angle + arc);
+                ctx.lineTo(radius, radius);
+                ctx.fill();
+
+                // Add text
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ecf0f1';
+                ctx.font = 'bold 22px Lato';
+                ctx.fillText(sectors[i].label, radius - 20, 10);
+                ctx.restore();
+            }
+        }
+
+        // Spin the wheel
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            wheel.classList.add('spin-blur');
+
+            const spinDuration = 5000; // 5 seconds
+            const spinRevolutions = 8; // Number of full rotations
+            const randomStop = Math.random();
+
+            const totalRotation = spinRevolutions * 360 + randomStop * 360;
+            const selectedIndex = Math.floor(randomStop * sectors.length);
+
+            // Add to current rotation so it doesn't reset after the first spin
+            currentRotation += totalRotation;
+
+            // Rotate the wheel based on current rotation
+            wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+            wheel.style.transform = `rotate(${currentRotation}deg)`; // Use the accumulated rotation
+
+            setTimeout(() => {
+                isSpinning = false;
+                wheel.classList.remove('spin-blur');
+                showResult(sectors[selectedIndex].label);
+                showRandomPrompt(sectors[selectedIndex].label);
+            }, spinDuration);
+        }
+
+        function showResult(result) {
+            dialogResult.textContent = `You got: ${result}`;
+            resultDialog.style.display = 'block';
+        }
+
+        function closeDialog() {
+            resultDialog.style.display = 'none';
+        }
+
+        function showRandomPrompt(result) {
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            promptElement.innerHTML = `<strong>${result}</strong><br>${randomPrompt}`;
+        }
+
+        // Initialize
+        drawWheel();
+        showRandomPrompt("");
+
+        // Event listeners
+        spinBtn.addEventListener('click', spinWheel);
+    </script>
+</body>
+
+</html>
